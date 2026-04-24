@@ -1,0 +1,32 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-added-large-files
+      - id: check-merge-conflict
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.8.4
+    hooks:
+      - id: ruff
+        files: ^backend/
+        args: [--fix]
+
+  - repo: local
+    hooks:
+      - id: backend-unit-tests
+        name: backend unit tests
+        language: system
+        entry: bash -c 'cd backend && uv run pytest tests/unit -q'
+        files: ^backend/
+        pass_filenames: false
+
+      - id: frontend-typecheck
+        name: frontend typecheck
+        language: system
+        entry: bash -c 'cd frontend && npm run typecheck'
+        files: ^frontend/
+        pass_filenames: false
