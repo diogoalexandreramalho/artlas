@@ -4,6 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 
 import { ApiError, request } from '@/lib/api';
 import type { Artwork } from '@/features/search/types';
+import { WishlistButton } from '@/features/wishlist/WishlistButton';
 
 export function ArtworkDetailPage() {
   const { slug = '' } = useParams();
@@ -34,6 +35,8 @@ export function ArtworkDetailPage() {
             {data.year && <> &middot; {data.year}</>}
           </p>
         </header>
+
+        <WishlistButton artwork={data} />
 
         <dl className="space-y-2 text-sm">
           <Field label="Kind">{capitalize(data.kind)}</Field>

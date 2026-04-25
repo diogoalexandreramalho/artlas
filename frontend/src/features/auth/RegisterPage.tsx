@@ -1,11 +1,13 @@
 import { useState, type FormEvent } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '@/features/auth/AuthContext';
 import { ApiError } from '@/lib/api';
 
 export function RegisterPage() {
   const { register } = useAuth();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const next = searchParams.get('next') || '/';
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -17,7 +19,7 @@ export function RegisterPage() {
     setIsSubmitting(true);
     try {
       await register(email, password);
-      navigate('/');
+      navigate(next);
     } catch (err) {
       setError(err instanceof ApiError ? err.message : 'Registration failed.');
     } finally {
@@ -56,7 +58,13 @@ export function RegisterPage() {
         </button>
       </form>
       <p className="mt-4 text-sm text-stone-600">
-        Already have an account? <Link to="/login" className="underline">Log in</Link>
+        Already have an account?{' '}
+        <Link
+          to={next === '/' ? '/login' : `/login?next=${encodeURIComponent(next)}`}
+          className="underline"
+        >
+          Log in
+        </Link>
       </p>
     </div>
   );
