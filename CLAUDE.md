@@ -40,7 +40,7 @@ docker compose up -d postgres
 cd backend && uv sync
 uv run alembic upgrade head
 uv run alembic revision --autogenerate -m "..."
-(cd src && uv run python -m etl.seed)              # seed dev data (idempotent; --reset to truncate)
+PYTHONPATH=src uv run python -m etl.seed              # seed dev data (idempotent; --reset to truncate)
 uv run uvicorn main:app --reload --app-dir src
 uv run pytest
 uv run ruff check .
