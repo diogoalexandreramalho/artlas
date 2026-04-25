@@ -4,8 +4,191 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Cal Sans — display face for headings + brand mark.
+   Pulled from the cal.com CDN (the prototype's source). */
+@font-face {
+  font-family: 'Cal Sans';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('https://cdn.jsdelivr.net/gh/calcom/font/fonts/webfonts/CalSans-SemiBold.woff2')
+      format('woff2'),
+    url('https://cdn.jsdelivr.net/gh/calcom/font/fonts/webfonts/CalSans-SemiBold.woff')
+      format('woff');
+}
+
 html,
 body,
 #root {
   height: 100%;
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+  font-feature-settings: 'ss01', 'cv11';
+}
+
+/* Cal Sans has no italic cut — never let the browser synthesize one. */
+* {
+  font-style: normal !important;
+  font-synthesis: none;
+}
+
+/* ── Components layer (ported from the Claude Design handoff) ─────────────
+   Used across the redesigned screens. Reference these via class names so
+   we don't drown JSX in long Tailwind chains for every primitive. */
+@layer components {
+  /* Type */
+  .display {
+    @apply font-display font-semibold text-ink;
+    letter-spacing: -0.02em;
+    line-height: 0.95;
+  }
+
+  .eyebrow {
+    @apply font-body text-ink-3;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+
+  /* Brand mark used in the top nav. */
+  .brand {
+    @apply font-display;
+    font-size: 26px;
+    letter-spacing: -0.02em;
+  }
+
+  /* Buttons */
+  .btn {
+    @apply inline-flex cursor-pointer items-center justify-center gap-2 whitespace-nowrap rounded-md border border-transparent text-sm font-medium transition;
+    padding: 10px 18px;
+    text-decoration: none;
+  }
+
+  .btn-primary {
+    @apply bg-ink text-bg;
+  }
+  .btn-primary:hover {
+    @apply bg-accent-deep text-white;
+  }
+
+  .btn-ghost {
+    @apply border-line bg-transparent text-ink;
+  }
+  .btn-ghost:hover {
+    @apply bg-bg-2;
+  }
+
+  .btn-accent {
+    @apply bg-accent text-white;
+  }
+  .btn-accent:hover {
+    @apply bg-accent-deep;
+  }
+
+  .btn-sm {
+    padding: 6px 12px;
+    font-size: 13px;
+  }
+
+  /* Cards */
+  .card {
+    @apply rounded-lg bg-surface shadow-card;
+  }
+
+  /* Inputs */
+  .input {
+    @apply w-full rounded-md border border-line bg-surface text-ink outline-none transition;
+    padding: 12px 16px;
+    font-size: 14px;
+  }
+  .input:focus {
+    @apply border-ink-2;
+    box-shadow: 0 0 0 3px var(--tw-shadow-color, rgba(13, 58, 228, 0.1));
+  }
+  .input::placeholder {
+    @apply text-ink-3;
+  }
+
+  /* Quiet inline link with thin underline. */
+  .link-quiet {
+    @apply border-b border-line text-ink-2 transition;
+    text-decoration: none;
+  }
+  .link-quiet:hover {
+    @apply border-ink-3 text-ink;
+  }
+
+  /* Heart toggle used on artwork frames. */
+  .heart-btn {
+    @apply inline-flex h-9 w-9 cursor-pointer items-center justify-center rounded-full border-0 text-ink transition;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+  .heart-btn:hover {
+    background: #fff;
+    transform: scale(1.06);
+  }
+  .heart-btn.active {
+    @apply text-accent;
+  }
+
+  /* Museum-mat-board treatment for artwork tiles. */
+  .artwork-frame {
+    @apply relative rounded-sm bg-label-bg shadow-card;
+    padding: 14px 14px 56px;
+  }
+  .artwork-frame .img-wrap {
+    aspect-ratio: 4 / 5;
+  }
+  .artwork-frame .label {
+    @apply absolute flex flex-col gap-0.5;
+    bottom: 12px;
+    left: 14px;
+    right: 14px;
+  }
+
+  /* Wall-label spec list used on detail pages. */
+  .speclist {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    gap: 8px 24px;
+    font-size: 13px;
+    line-height: 1.55;
+  }
+  .speclist dt {
+    @apply text-ink-3;
+    font-weight: 400;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-size: 10.5px;
+    padding-top: 3px;
+  }
+  .speclist dd {
+    @apply m-0 text-ink;
+  }
+
+  /* Pill chip — used for tags, counts, etc. */
+  .chip {
+    @apply inline-flex items-center gap-1.5 border border-line-2 bg-bg-2 text-ink-2;
+    padding: 4px 10px;
+    border-radius: 100px;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+  }
+  .chip-accent {
+    @apply border-transparent bg-accent-soft text-accent-deep;
+  }
+
+  /* Image wrapper for SmartImg — provides the placeholder background. */
+  .img-wrap {
+    @apply relative overflow-hidden bg-bg-2;
+  }
+  .img-wrap img {
+    @apply block h-full w-full object-cover;
+  }
 }
