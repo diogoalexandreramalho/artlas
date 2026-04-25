@@ -32,8 +32,18 @@ export type Artwork = {
   museum: Museum | null;
 };
 
+/** Mixed-bucket search response from `GET /search?q=...`. */
 export type SearchResults = {
   query: string;
+  artists: Artist[];
+  artworks: Artwork[];
+  museums: Museum[];
+};
+
+/** Generic offset/limit envelope returned by list endpoints. */
+export type Page<T> = {
+  items: T[];
   total: number;
-  results: Artwork[];
+  limit: number;
+  offset: number;
 };
