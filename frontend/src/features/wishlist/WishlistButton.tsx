@@ -2,20 +2,17 @@ import { Link, useLocation } from 'react-router-dom';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { ApiError, request } from '@/lib/api';
+import { Icon } from '@/components/Icon';
 import { useAuth } from '@/features/auth/AuthContext';
 import type { Artwork } from '@/features/search/types';
 import type { WishlistItem } from '@/features/wishlist/types';
 
-const BTN_BASE =
-  'inline-flex items-center gap-2 rounded border px-3 py-2 text-sm font-medium transition disabled:opacity-50';
-const BTN_ADD = `${BTN_BASE} border-stone-900 bg-stone-900 text-white hover:bg-stone-700`;
-const BTN_REMOVE = `${BTN_BASE} border-stone-300 bg-white text-stone-900 hover:border-stone-400`;
-const BTN_LINK = `${BTN_BASE} border-stone-300 bg-white text-stone-700 hover:border-stone-400`;
-
-/** Toggle button for adding/removing the given artwork to the current user's wishlist.
+/** Toggle button for adding/removing the given artwork to the current user's
+ *  wishlist. Styled with the `.btn` family from the design tokens (PR #12).
  *
- * Unauthenticated users see a link to /login that returns them to the current
- * page after success. Authenticated users see an optimistic toggle. */
+ * - Unauthenticated → ghost-style "Log in to save" link with `?next=` return.
+ * - Authenticated, not saved → primary (dark ink) "Save to wishlist".
+ * - Authenticated, saved → ghost (transparent / border) "Saved to wishlist". */
 export function WishlistButton({ artwork }: { artwork: Artwork }) {
   const { user, isLoading: authLoading } = useAuth();
   const location = useLocation();
@@ -44,7 +41,6 @@ export function WishlistButton({ artwork }: { artwork: Artwork }) {
       queryClient.setQueryData<WishlistItem[]>(['wishlist'], (curr) => {
         const list = curr ?? [];
         if (inWishlist) return list.filter((it) => it.artwork.id !== artwork.id);
-        // Optimistic insert with a temporary id; refetch will replace it with the real one.
         return [{ id: -1, artwork, notes: null }, ...list];
       });
       return { previous };
@@ -62,8 +58,8 @@ export function WishlistButton({ artwork }: { artwork: Artwork }) {
   if (!user) {
     const next = encodeURIComponent(location.pathname + location.search);
     return (
-      <Link to={`/login?next=${next}`} className={BTN_LINK}>
-        <Heart filled={false} />
+      <Link to={`/login?next=${next}`} className="btn btn-ghost">
+        <Icon.heart />
         Log in to save
       </Link>
     );
@@ -74,29 +70,11 @@ export function WishlistButton({ artwork }: { artwork: Artwork }) {
       type="button"
       onClick={() => toggle.mutate()}
       disabled={toggle.isPending || wishlist.isLoading}
-      className={inWishlist ? BTN_REMOVE : BTN_ADD}
+      className={['btn', inWishlist ? 'btn-ghost' : 'btn-primary'].join(' ')}
       aria-pressed={inWishlist}
     >
-      <Heart filled={inWishlist} />
-      {inWishlist ? 'Saved' : 'Save to wishlist'}
+      <Icon.heart filled={inWishlist} />
+      {inWishlist ? 'Saved to wishlist' : 'Save to wishlist'}
     </button>
-  );
-}
-
-function Heart({ filled }: { filled: boolean }) {
-  return (
-    <svg
-      width="16"
-      height="16"
-      viewBox="0 0 24 24"
-      fill={filled ? 'currentColor' : 'none'}
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
-    </svg>
   );
 }
