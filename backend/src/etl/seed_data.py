@@ -256,7 +256,7 @@ ARTWORKS: list[dict[str, Any]] = [
         "museum_wikidata_id": "Q19675",
         "year": 1503,
         "kind": "painting",
-        "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ec/Mona_Lisa%2C_by_Leonardo_da_Vinci%2C_from_C2RMF_retouched.jpg/600px-Mona_Lisa%2C_by_Leonardo_da_Vinci%2C_from_C2RMF_retouched.jpg",
+        "image_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Mona_Lisa%2C_by_Leonardo_da_Vinci%2C_from_C2RMF_retouched.jpg?width=600",
     },
     {
         "wikidata_id": "Q47271",
@@ -265,7 +265,7 @@ ARTWORKS: list[dict[str, Any]] = [
         "museum_wikidata_id": "Q19675",
         "year": 1503,
         "kind": "painting",
-        "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Leonardo_da_Vinci_-_Virgin_and_Child_with_St_Anne_C2RMF_retouched.jpg/600px-Leonardo_da_Vinci_-_Virgin_and_Child_with_St_Anne_C2RMF_retouched.jpg",
+        "image_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Leonardo_da_Vinci_-_Virgin_and_Child_with_St_Anne_C2RMF_retouched.jpg?width=600",
     },
     # Van Gogh — MoMA, Van Gogh Museum, National Gallery
     {
@@ -275,7 +275,7 @@ ARTWORKS: list[dict[str, Any]] = [
         "museum_wikidata_id": "Q188740",
         "year": 1889,
         "kind": "painting",
-        "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg/600px-Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg",
+        "image_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg?width=600",
     },
     {
         "wikidata_id": "Q1144555",
@@ -284,7 +284,7 @@ ARTWORKS: list[dict[str, Any]] = [
         "museum_wikidata_id": "Q224124",
         "year": 1888,
         "kind": "painting",
-        "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/76/Vincent_van_Gogh_-_De_slaapkamer_-_Google_Art_Project.jpg/600px-Vincent_van_Gogh_-_De_slaapkamer_-_Google_Art_Project.jpg",
+        "image_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Vincent_van_Gogh_-_De_slaapkamer_-_Google_Art_Project.jpg?width=600",
     },
     {
         "wikidata_id": "Q763304",
@@ -293,7 +293,7 @@ ARTWORKS: list[dict[str, Any]] = [
         "museum_wikidata_id": "Q224124",
         "year": 1890,
         "kind": "painting",
-        "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/Vincent_van_Gogh_-_Wheatfield_with_crows_-_Google_Art_Project.jpg/600px-Vincent_van_Gogh_-_Wheatfield_with_crows_-_Google_Art_Project.jpg",
+        "image_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Vincent_van_Gogh_-_Wheatfield_with_crows_-_Google_Art_Project.jpg?width=600",
     },
     {
         "wikidata_id": "Q161763",
@@ -302,7 +302,7 @@ ARTWORKS: list[dict[str, Any]] = [
         "museum_wikidata_id": "Q180788",
         "year": 1888,
         "kind": "painting",
-        "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Vincent_Willem_van_Gogh_127.jpg/600px-Vincent_Willem_van_Gogh_127.jpg",
+        "image_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Vincent_Willem_van_Gogh_127.jpg?width=600",
     },
     # Picasso — MoMA + Reina Sofía
     {
@@ -312,7 +312,7 @@ ARTWORKS: list[dict[str, Any]] = [
         "museum_wikidata_id": "Q188740",
         "year": 1907,
         "kind": "painting",
-        "image_url": "https://upload.wikimedia.org/wikipedia/en/thumb/4/4c/Les_Demoiselles_d%27Avignon.jpg/600px-Les_Demoiselles_d%27Avignon.jpg",
+        "image_url": "https://en.wikipedia.org/wiki/Special:FilePath/Les_Demoiselles_d%27Avignon.jpg?width=600",
     },
     {
         "wikidata_id": "Q175036",
@@ -321,7 +321,7 @@ ARTWORKS: list[dict[str, Any]] = [
         "museum_wikidata_id": "Q460889",
         "year": 1937,
         "kind": "painting",
-        "image_url": "https://upload.wikimedia.org/wikipedia/en/thumb/7/74/PicassoGuernica.jpg/800px-PicassoGuernica.jpg",
+        "image_url": "https://en.wikipedia.org/wiki/Special:FilePath/PicassoGuernica.jpg?width=800",
     },
     # Monet — Musée d'Orsay + MoMA
     {
@@ -331,7 +331,7 @@ ARTWORKS: list[dict[str, Any]] = [
         "museum_wikidata_id": "Q23402",
         "year": 1869,
         "kind": "painting",
-        "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/26/Claude_Monet_-_The_Magpie_-_Google_Art_Project.jpg/600px-Claude_Monet_-_The_Magpie_-_Google_Art_Project.jpg",
+        "image_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Claude_Monet_-_The_Magpie_-_Google_Art_Project.jpg?width=600",
     },
     {
         "wikidata_id": "Q3402069",
@@ -340,7 +340,7 @@ ARTWORKS: list[dict[str, Any]] = [
         "museum_wikidata_id": "Q23402",
         "year": 1873,
         "kind": "painting",
-        "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/Claude_Monet_-_Coquelicots.jpg/600px-Claude_Monet_-_Coquelicots.jpg",
+        "image_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Claude_Monet_-_Coquelicots.jpg?width=600",
     },
     {
         "wikidata_id": "Q1062810",
@@ -349,7 +349,7 @@ ARTWORKS: list[dict[str, Any]] = [
         "museum_wikidata_id": "Q188740",
         "year": 1916,
         "kind": "painting",
-        "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/Claude_Monet_-_Water_Lilies_-_1906%2C_Ryerson.jpg/600px-Claude_Monet_-_Water_Lilies_-_1906%2C_Ryerson.jpg",
+        "image_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Claude_Monet_-_Water_Lilies_-_1906%2C_Ryerson.jpg?width=600",
     },
     # Frida Kahlo — Museo Frida Kahlo
     {
@@ -359,7 +359,7 @@ ARTWORKS: list[dict[str, Any]] = [
         "museum_wikidata_id": "Q3329419",
         "year": 1954,
         "kind": "painting",
-        "image_url": "https://upload.wikimedia.org/wikipedia/en/thumb/6/61/Viva-la-vida.jpg/600px-Viva-la-vida.jpg",
+        "image_url": "https://en.wikipedia.org/wiki/Special:FilePath/Viva-la-vida.jpg?width=600",
     },
     # Hokusai — Met (one of many casts/prints)
     {
@@ -369,7 +369,7 @@ ARTWORKS: list[dict[str, Any]] = [
         "museum_wikidata_id": "Q160236",
         "year": 1831,
         "kind": "other",
-        "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/The_Great_Wave_off_Kanagawa.jpg/600px-The_Great_Wave_off_Kanagawa.jpg",
+        "image_url": "https://commons.wikimedia.org/wiki/Special:FilePath/The_Great_Wave_off_Kanagawa.jpg?width=600",
     },
     {
         "wikidata_id": "Q1404912",
@@ -378,7 +378,7 @@ ARTWORKS: list[dict[str, Any]] = [
         "museum_wikidata_id": "Q160236",
         "year": 1830,
         "kind": "other",
-        "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Red_Fuji_southern_wind_clear_morning.jpg/600px-Red_Fuji_southern_wind_clear_morning.jpg",
+        "image_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Red_Fuji_southern_wind_clear_morning.jpg?width=600",
     },
     # Rodin — Met (cast of The Thinker)
     {
@@ -388,7 +388,7 @@ ARTWORKS: list[dict[str, Any]] = [
         "museum_wikidata_id": "Q160236",
         "year": 1880,
         "kind": "sculpture",
-        "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/The_Thinker%2C_Auguste_Rodin.jpg/600px-The_Thinker%2C_Auguste_Rodin.jpg",
+        "image_url": "https://commons.wikimedia.org/wiki/Special:FilePath/The_Thinker%2C_Auguste_Rodin.jpg?width=600",
     },
     # Yayoi Kusama — Tate Modern (Infinity Mirror Rooms touring)
     {
@@ -408,7 +408,7 @@ ARTWORKS: list[dict[str, Any]] = [
         "museum_wikidata_id": "Q160112",
         "year": 1656,
         "kind": "painting",
-        "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/99/Las_Meninas%2C_by_Diego_Vel%C3%A1zquez%2C_from_Prado_in_Google_Earth.jpg/600px-Las_Meninas%2C_by_Diego_Vel%C3%A1zquez%2C_from_Prado_in_Google_Earth.jpg",
+        "image_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Las_Meninas%2C_by_Diego_Vel%C3%A1zquez%2C_from_Prado_in_Google_Earth.jpg?width=600",
     },
     {
         "wikidata_id": "Q1220251",
@@ -417,7 +417,7 @@ ARTWORKS: list[dict[str, Any]] = [
         "museum_wikidata_id": "Q160112",
         "year": 1635,
         "kind": "painting",
-        "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Vel%C3%A1zquez_-_de_Breda_o_Las_Lanzas_%28Museo_del_Prado%2C_1634-35%29.jpg/800px-Vel%C3%A1zquez_-_de_Breda_o_Las_Lanzas_%28Museo_del_Prado%2C_1634-35%29.jpg",
+        "image_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Vel%C3%A1zquez_-_de_Breda_o_Las_Lanzas_%28Museo_del_Prado%2C_1634-35%29.jpg?width=800",
     },
     # Botticelli — Uffizi
     {
@@ -427,7 +427,7 @@ ARTWORKS: list[dict[str, Any]] = [
         "museum_wikidata_id": "Q173799",
         "year": 1485,
         "kind": "painting",
-        "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/Sandro_Botticelli_-_La_nascita_di_Venere_-_Google_Art_Project_-_edited.jpg/800px-Sandro_Botticelli_-_La_nascita_di_Venere_-_Google_Art_Project_-_edited.jpg",
+        "image_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Sandro_Botticelli_-_La_nascita_di_Venere_-_Google_Art_Project_-_edited.jpg?width=800",
     },
     {
         "wikidata_id": "Q193404",
@@ -436,7 +436,7 @@ ARTWORKS: list[dict[str, Any]] = [
         "museum_wikidata_id": "Q173799",
         "year": 1482,
         "kind": "painting",
-        "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bb/Botticelli-primavera.jpg/800px-Botticelli-primavera.jpg",
+        "image_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Botticelli-primavera.jpg?width=800",
     },
     # Rembrandt — Rijksmuseum + National Gallery
     {
@@ -446,7 +446,7 @@ ARTWORKS: list[dict[str, Any]] = [
         "museum_wikidata_id": "Q190804",
         "year": 1642,
         "kind": "painting",
-        "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/The_Night_Watch_-_HD.jpg/800px-The_Night_Watch_-_HD.jpg",
+        "image_url": "https://commons.wikimedia.org/wiki/Special:FilePath/The_Night_Watch_-_HD.jpg?width=800",
     },
     {
         "wikidata_id": "Q700430",
@@ -455,7 +455,7 @@ ARTWORKS: list[dict[str, Any]] = [
         "museum_wikidata_id": "Q190804",
         "year": 1667,
         "kind": "painting",
-        "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/Rembrandt_Harmensz._van_Rijn_-_Portret_van_een_paar_als_oudtestamentische_figuren%2C_genaamd_%27Het_Joodse_bruidje%27_-_Google_Art_Project.jpg/600px-Rembrandt_Harmensz._van_Rijn_-_Portret_van_een_paar_als_oudtestamentische_figuren%2C_genaamd_%27Het_Joodse_bruidje%27_-_Google_Art_Project.jpg",
+        "image_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Rembrandt_Harmensz._van_Rijn_-_Portret_van_een_paar_als_oudtestamentische_figuren%2C_genaamd_%27Het_Joodse_bruidje%27_-_Google_Art_Project.jpg?width=600",
     },
     {
         "wikidata_id": "Q467279",
@@ -464,7 +464,7 @@ ARTWORKS: list[dict[str, Any]] = [
         "museum_wikidata_id": "Q180788",
         "year": 1669,
         "kind": "painting",
-        "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/dc/Rembrandt_van_Rijn_-_Self-Portrait_-_Google_Art_Project.jpg/600px-Rembrandt_van_Rijn_-_Self-Portrait_-_Google_Art_Project.jpg",
+        "image_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Rembrandt_van_Rijn_-_Self-Portrait_-_Google_Art_Project.jpg?width=600",
     },
     # Dalí — MoMA + Reina Sofía
     {
@@ -474,7 +474,7 @@ ARTWORKS: list[dict[str, Any]] = [
         "museum_wikidata_id": "Q188740",
         "year": 1931,
         "kind": "painting",
-        "image_url": "https://upload.wikimedia.org/wikipedia/en/thumb/d/dd/The_Persistence_of_Memory.jpg/600px-The_Persistence_of_Memory.jpg",
+        "image_url": "https://en.wikipedia.org/wiki/Special:FilePath/The_Persistence_of_Memory.jpg?width=600",
     },
     # Vermeer — Rijksmuseum
     {
@@ -484,7 +484,7 @@ ARTWORKS: list[dict[str, Any]] = [
         "museum_wikidata_id": "Q190804",
         "year": 1660,
         "kind": "painting",
-        "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Johannes_Vermeer_-_Het_melkmeisje_-_Google_Art_Project.jpg/600px-Johannes_Vermeer_-_Het_melkmeisje_-_Google_Art_Project.jpg",
+        "image_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Johannes_Vermeer_-_Het_melkmeisje_-_Google_Art_Project.jpg?width=600",
     },
     {
         "wikidata_id": "Q505373",
@@ -493,7 +493,7 @@ ARTWORKS: list[dict[str, Any]] = [
         "museum_wikidata_id": "Q190804",
         "year": 1663,
         "kind": "painting",
-        "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8b/Johannes_Vermeer_-_Woman_reading_a_letter_-_Google_Art_Project.jpg/600px-Johannes_Vermeer_-_Woman_reading_a_letter_-_Google_Art_Project.jpg",
+        "image_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Johannes_Vermeer_-_Woman_reading_a_letter_-_Google_Art_Project.jpg?width=600",
     },
     # Michelangelo — Uffizi
     {
@@ -503,7 +503,7 @@ ARTWORKS: list[dict[str, Any]] = [
         "museum_wikidata_id": "Q173799",
         "year": 1507,
         "kind": "painting",
-        "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f1/Michelangelo_Buonarroti_-_Tondo_Doni_-_Google_Art_Project.jpg/600px-Michelangelo_Buonarroti_-_Tondo_Doni_-_Google_Art_Project.jpg",
+        "image_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Michelangelo_Buonarroti_-_Tondo_Doni_-_Google_Art_Project.jpg?width=600",
     },
     # Georgia O'Keeffe — Met
     {
@@ -513,7 +513,7 @@ ARTWORKS: list[dict[str, Any]] = [
         "museum_wikidata_id": "Q160236",
         "year": 1931,
         "kind": "painting",
-        "image_url": "https://upload.wikimedia.org/wikipedia/en/thumb/1/15/Cow%27s_Skull-_Red%2C_White%2C_and_Blue_by_Georgia_O%27Keeffe.jpg/600px-Cow%27s_Skull-_Red%2C_White%2C_and_Blue_by_Georgia_O%27Keeffe.jpg",
+        "image_url": "https://en.wikipedia.org/wiki/Special:FilePath/Cow%27s_Skull-_Red%2C_White%2C_and_Blue_by_Georgia_O%27Keeffe.jpg?width=600",
     },
     {
         "wikidata_id": "Q4924260",
@@ -522,6 +522,6 @@ ARTWORKS: list[dict[str, Any]] = [
         "museum_wikidata_id": "Q160236",
         "year": 1926,
         "kind": "painting",
-        "image_url": "https://upload.wikimedia.org/wikipedia/en/thumb/8/86/Black_Iris_by_Georgia_O%27Keeffe_1926.jpg/600px-Black_Iris_by_Georgia_O%27Keeffe_1926.jpg",
+        "image_url": "https://en.wikipedia.org/wiki/Special:FilePath/Black_Iris_by_Georgia_O%27Keeffe_1926.jpg?width=600",
     },
 ]
