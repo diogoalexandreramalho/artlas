@@ -2,6 +2,7 @@ from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from models.artist import Artist
+from models.artwork import Artwork
 
 
 async def list_artists(
@@ -12,6 +13,25 @@ async def list_artists(
     items = list((await session.execute(items_stmt)).scalars().all())
     total = (await session.execute(total_stmt)).scalar_one()
     return items, total
+
+
+async def get_by_slug(session: AsyncSession, slug: str) -> Artist | None:
+    """`artist.slug` is unique."""
+    stmt = select(Artist).where(Artist.slug == slug)
+    return (await session.execute(stmt)).scalar_one_or_none()
+
+
+async def list_artworks_by_artist(session: AsyncSession, artist_id: int) -> list[Artwork]:
+    """Artworks for an artist's detail page.
+
+    `Artwork.artist` and `.museum` eager-load via `lazy="joined"`.
+    """
+    stmt = (
+        select(Artwork)
+        .where(Artwork.artist_id == artist_id)
+        .order_by(Artwork.year.asc().nulls_last(), Artwork.title)
+    )
+    return list((await session.execute(stmt)).unique().scalars().all())
 
 
 async def search_artists(session: AsyncSession, *, q: str, limit: int) -> list[Artist]:
