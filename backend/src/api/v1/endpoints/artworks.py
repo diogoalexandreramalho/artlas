@@ -1,6 +1,7 @@
 from fastapi import APIRouter
 
 from api.v1.deps import DbSession, PaginationParams
+from core.exceptions import NotFoundError
 from repositories import artwork as artwork_repo
 from schemas.artwork import ArtworkRead
 from schemas.common import Page
@@ -19,3 +20,11 @@ async def list_artworks(session: DbSession, pagination: PaginationParams) -> Pag
         limit=pagination.limit,
         offset=pagination.offset,
     )
+
+
+@router.get("/{slug}", response_model=ArtworkRead)
+async def get_artwork(session: DbSession, slug: str) -> ArtworkRead:
+    artwork = await artwork_repo.get_by_slug(session, slug)
+    if artwork is None:
+        raise NotFoundError(f"Artwork '{slug}' not found.")
+    return ArtworkRead.model_validate(artwork)
