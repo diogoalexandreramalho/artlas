@@ -69,8 +69,9 @@ model → schema → repository → service → router → register in `api/v1/r
 ## Git workflow
 
 - **Branches**: short-lived feature branches off `main`. Name: `<type>/<slug>` — e.g. `feat/wikidata-etl`, `fix/cors-parsing`.
-- **Commits**: small and focused. Message format: `<type>: <imperative summary>` (same types as PRs).
-- **PRs**: open against `main`, squash-merge. Title `<type>: <imperative>` under 70 chars. Types: `feat`, `fix`, `chore`, `refactor`, `test`, `docs`.
+- **Commits**: small and focused. Format: `<type>(<scope>): <imperative summary>` — e.g. `feat(auth): add password reset`, `fix(etl): handle empty wikidata response`. Scope is optional — omit the parentheses when the change spans many areas (`chore: bump pre-commit ruff version`).
+- **Types**: `feat`, `fix`, `chore`, `refactor`, `test`, `docs`. **Common scopes**: `auth`, `etl`, `api`, `db`, `frontend`, `tests`, `ci`, `deps`.
+- **PRs**: open against `main`, squash-merge. Title matches commit format (`<type>(<scope>): <imperative>`, ≤ 70 chars).
 - **PR body**:
   ```
   ## Summary
@@ -84,6 +85,7 @@ model → schema → repository → service → router → register in `api/v1/r
   ```
 - **Pre-commit**: `pre-commit install` once per clone. Runs ruff, backend unit tests, frontend typecheck on staged files. Install with `uv tool install pre-commit` or `pipx install pre-commit`.
 - **No direct pushes to `main`**. Open a PR even for one-line fixes — the diff is the record.
+- **Skill**: invoke `/open-pr` to commit (if needed), push, and open a PR following the conventions above.
 
 ## Tests
 
