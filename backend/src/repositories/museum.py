@@ -1,7 +1,27 @@
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from models.artwork import Artwork
 from models.museum import Museum
+
+
+async def get_by_wikidata_id(session: AsyncSession, wikidata_id: str) -> Museum | None:
+    """`museum.wikidata_id` is unique."""
+    stmt = select(Museum).where(Museum.wikidata_id == wikidata_id)
+    return (await session.execute(stmt)).scalar_one_or_none()
+
+
+async def list_artworks_by_museum(session: AsyncSession, museum_id: int) -> list[Artwork]:
+    """Artworks held by a museum.
+
+    `Artwork.artist` and `.museum` eager-load via `lazy="joined"`.
+    """
+    stmt = (
+        select(Artwork)
+        .where(Artwork.museum_id == museum_id)
+        .order_by(Artwork.year.asc().nulls_last(), Artwork.title)
+    )
+    return list((await session.execute(stmt)).unique().scalars().all())
 
 
 async def list_museums(
