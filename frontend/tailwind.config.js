@@ -40,6 +40,13 @@ export default {
         card: '0 1px 0 rgba(26, 23, 20, 0.04), 0 1px 2px rgba(26, 23, 20, 0.04)',
         lift: '0 1px 0 rgba(26, 23, 20, 0.04), 0 8px 28px rgba(26, 23, 20, 0.08)',
       },
+      spacing: {
+        // Fills the gap between Tailwind's defaults (14 = 56px, 16 = 64px).
+        // The editorial layouts use a 60px breathing rhythm (4.0/4.0 padding,
+        // section pb, etc.) — keeping it as a single token avoids inline
+        // `[60px]` arbitrary values littering the components.
+        15: '60px',
+      },
     },
   },
   plugins: [],

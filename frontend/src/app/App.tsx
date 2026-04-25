@@ -5,7 +5,7 @@ import { Footer } from '@/components/Footer';
 import { TopNav } from '@/components/TopNav';
 
 /** Routes that take the full viewport (edge-to-edge, no footer below). */
-const FULL_BLEED_ROUTES = ['/map'];
+const FULL_BLEED_ROUTES = ['/map', '/login', '/register'];
 
 export function App() {
   const { pathname } = useLocation();

@@ -13,7 +13,7 @@ const NAV_ITEMS: { to: string; label: string; end?: boolean }[] = [
 ];
 
 export function TopNav() {
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
 
   // Wishlist count for the heart badge. Only fires when logged in.
   const wishlist = useQuery<WishlistItem[]>({
@@ -67,26 +67,15 @@ export function TopNav() {
           </Link>
 
           {user ? (
-            <>
-              {/* TODO: replace with /profile route in PR #16. */}
-              <Link
-                to="/wishlist"
-                className="flex items-center gap-2 rounded-full border border-line py-1 pl-3 pr-1"
-              >
-                <span className="text-[13px] text-ink-2">{user.email.split('@')[0]}</span>
-                <span className="font-display flex h-6 w-6 items-center justify-center rounded-full bg-accent text-xs font-semibold text-white">
-                  {user.email[0]?.toUpperCase()}
-                </span>
-              </Link>
-              {/* TODO: relocate to /profile screen in PR #16. */}
-              <button
-                type="button"
-                onClick={logout}
-                className="text-sm text-ink-3 transition hover:text-ink"
-              >
-                Sign out
-              </button>
-            </>
+            <Link
+              to="/profile"
+              className="flex items-center gap-2 rounded-full border border-line py-1 pl-3 pr-1 transition hover:border-ink-3"
+            >
+              <span className="text-[13px] text-ink-2">{user.email.split('@')[0]}</span>
+              <span className="font-display flex h-6 w-6 items-center justify-center rounded-full bg-accent text-xs font-semibold text-white">
+                {user.email[0]?.toUpperCase()}
+              </span>
+            </Link>
           ) : (
             <Link to="/login" className="btn btn-primary btn-sm">
               Sign in
