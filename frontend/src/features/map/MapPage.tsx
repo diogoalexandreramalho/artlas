@@ -1,38 +1,26 @@
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { ChangeEvent } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
-import Map, {
-  Marker,
-  NavigationControl,
-  Popup,
-} from 'react-map-gl/maplibre';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import Map, { Marker, NavigationControl } from 'react-map-gl/maplibre';
 import type { MapRef } from 'react-map-gl/maplibre';
 
-import { request } from '@/lib/api';
+import { ApiError, request } from '@/lib/api';
+import { Icon } from '@/components/Icon';
+import { SmartImg } from '@/components/SmartImg';
+import { useAuth } from '@/features/auth/AuthContext';
+import { COUNTRY_FILL_STYLE } from '@/features/map/mapStyle';
 import type {
+  MapArtwork,
   MapFilters,
   MapMuseumResult,
   MapResponse,
 } from '@/features/map/types';
+import type { WishlistItem } from '@/features/wishlist/types';
 
-const OSM_STYLE = {
-  version: 8 as const,
-  sources: {
-    osm: {
-      type: 'raster' as const,
-      tiles: ['https://a.tile.openstreetmap.org/{z}/{x}/{y}.png'],
-      tileSize: 256,
-      attribution: '&copy; OpenStreetMap contributors',
-    },
-  },
-  layers: [{ id: 'osm', type: 'raster' as const, source: 'osm' }],
-};
-
-const INITIAL_VIEW = { longitude: 10, latitude: 30, zoom: 2 };
-
-type FilterKey = 'q' | 'city' | 'country' | 'movement';
-const FILTER_KEYS: FilterKey[] = ['q', 'city', 'country', 'movement'];
+const INITIAL_VIEW = { longitude: 10, latitude: 45, zoom: 3.2 };
+const FILTER_KEYS = ['q', 'city', 'country', 'movement'] as const;
+type FilterKey = (typeof FILTER_KEYS)[number];
 
 export function MapPage() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -40,13 +28,11 @@ export function MapPage() {
   const [bbox, setBbox] = useState<string | null>(null);
   const [selectedId, setSelectedId] = useState<number | null>(null);
 
-  // Read filters from the URL (?q=…&city=…&country=…&movement=…).
   const filters = useMemo(
     () =>
-      Object.fromEntries(FILTER_KEYS.map((k) => [k, searchParams.get(k) ?? ''])) as Record<
-        FilterKey,
-        string
-      >,
+      Object.fromEntries(
+        FILTER_KEYS.map((k) => [k, searchParams.get(k) ?? '']),
+      ) as Record<FilterKey, string>,
     [searchParams],
   );
 
@@ -60,12 +46,16 @@ export function MapPage() {
     [searchParams, setSearchParams],
   );
 
+  const resetFilters = useCallback(() => {
+    setSearchParams(new URLSearchParams(), { replace: true });
+  }, [setSearchParams]);
+
   const filterOptions = useQuery({
     queryKey: ['map', 'filters'],
     queryFn: () => request<MapFilters>('/map/filters', { auth: false }),
   });
 
-  // Compute bbox from the map's current viewport.
+  // Bbox is computed from the map's current viewport on load + after every pan/zoom.
   const updateBbox = useCallback(() => {
     const m = mapRef.current?.getMap();
     if (!m) return;
@@ -81,210 +71,355 @@ export function MapPage() {
       return request<MapResponse>(`/map/artworks?${params}`, { auth: false });
     },
     enabled: !!bbox,
-    placeholderData: (prev) => prev, // keep previous data while panning
+    placeholderData: (prev) => prev,
   });
 
   const museums = mapData.data?.museums ?? [];
-  const selectedMuseum = museums.find((m) => m.id === selectedId) ?? null;
+  const totalMuseums = useQuery({
+    queryKey: ['map', 'totalCount'],
+    queryFn: () =>
+      request<MapResponse>(`/map/artworks?bbox=-180,-90,180,90`, { auth: false }).then(
+        (r) => r.museums.length,
+      ),
+  });
+  const total = totalMuseums.data ?? 0;
+
+  const selected = museums.find((m) => m.id === selectedId) ?? null;
+
+  // flyTo when a marker is selected.
+  useEffect(() => {
+    if (!selected) return;
+    const m = mapRef.current?.getMap();
+    if (!m || selected.latitude == null || selected.longitude == null) return;
+    m.flyTo({ center: [selected.longitude, selected.latitude], zoom: 11, duration: 900 });
+  }, [selected]);
 
   return (
-    <div className="space-y-3">
-      <FilterBar
+    <div className="relative" style={{ height: 'calc(100vh - 73px)' }}>
+      <Map
+        ref={mapRef}
+        initialViewState={INITIAL_VIEW}
+        mapStyle={COUNTRY_FILL_STYLE}
+        attributionControl={false}
+        style={{ position: 'absolute', inset: 0 }}
+        onLoad={updateBbox}
+        onMoveEnd={updateBbox}
+      >
+        <NavigationControl position="top-right" showCompass={false} />
+
+        {museums.map((m) =>
+          m.latitude == null || m.longitude == null ? null : (
+            <Marker
+              key={m.id}
+              longitude={m.longitude}
+              latitude={m.latitude}
+              anchor="center"
+              onClick={(e) => {
+                e.originalEvent.stopPropagation();
+                setSelectedId(m.id);
+              }}
+            >
+              <PillMarker count={m.artworks.length} city={m.city ?? ''} />
+            </Marker>
+          ),
+        )}
+      </Map>
+
+      <FilterRail
         filters={filters}
         options={filterOptions.data}
+        shown={museums.length}
         onChange={setFilter}
+        onReset={resetFilters}
       />
 
-      <div className="relative h-[70vh] overflow-hidden rounded border border-stone-200">
-        <Map
-          ref={mapRef}
-          initialViewState={INITIAL_VIEW}
-          mapStyle={OSM_STYLE}
-          style={{ width: '100%', height: '100%' }}
-          onLoad={updateBbox}
-          onMoveEnd={updateBbox}
-        >
-          <NavigationControl position="top-right" />
+      {selected && (
+        <SelectedMuseumPanel museum={selected} onClose={() => setSelectedId(null)} />
+      )}
 
-          {museums.map((m) =>
-            m.latitude == null || m.longitude == null ? null : (
-              <Marker
-                key={m.id}
-                longitude={m.longitude}
-                latitude={m.latitude}
-                anchor="bottom"
-                onClick={(e) => {
-                  e.originalEvent.stopPropagation();
-                  setSelectedId(m.id);
-                }}
-              >
-                <MarkerPin count={m.artworks.length} />
-              </Marker>
-            ),
-          )}
-
-          {selectedMuseum &&
-            selectedMuseum.latitude != null &&
-            selectedMuseum.longitude != null && (
-              <Popup
-                longitude={selectedMuseum.longitude}
-                latitude={selectedMuseum.latitude}
-                anchor="bottom"
-                offset={28}
-                onClose={() => setSelectedId(null)}
-                closeOnClick={false}
-                maxWidth="320px"
-              >
-                <MuseumPopupBody museum={selectedMuseum} />
-              </Popup>
-            )}
-        </Map>
-
-        <StatusOverlay
-          loading={mapData.isLoading || mapData.isFetching}
-          empty={!mapData.isLoading && museums.length === 0}
-        />
-      </div>
+      <CounterPill shown={museums.length} total={total} />
     </div>
   );
 }
 
-function FilterBar({
+// ── Pill marker ────────────────────────────────────────────
+
+function PillMarker({ count, city }: { count: number; city: string }) {
+  return (
+    <div
+      className="flex cursor-pointer items-center gap-2 rounded-full border border-line bg-surface py-1.5 pl-1.5 pr-3 text-xs text-ink shadow-card transition hover:scale-105 hover:shadow-lift"
+      title={`${count} ${count === 1 ? 'work' : 'works'} in ${city}`}
+    >
+      <span className="flex h-[22px] w-[22px] items-center justify-center rounded-full bg-accent text-[11px] font-semibold text-white">
+        {count}
+      </span>
+      <span className="whitespace-nowrap font-medium">{city}</span>
+    </div>
+  );
+}
+
+// ── Filter rail ────────────────────────────────────────────
+
+function FilterRail({
   filters,
   options,
+  shown,
   onChange,
+  onReset,
 }: {
   filters: Record<FilterKey, string>;
   options: MapFilters | undefined;
-  onChange: (key: FilterKey, value: string) => void;
+  shown: number;
+  onChange: (k: FilterKey, v: string) => void;
+  onReset: () => void;
 }) {
-  const onInput = (k: FilterKey) => (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>
+  const handle = (k: FilterKey) => (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>
     onChange(k, e.target.value);
 
   return (
-    <div className="flex flex-wrap items-center gap-2">
+    <div className="card absolute left-5 top-5 z-10 w-80 p-4 shadow-lift">
+      <div className="eyebrow mb-3">Find a museum</div>
       <input
-        type="search"
+        className="input mb-3"
+        placeholder="Search artwork, artist, or museum…"
         value={filters.q}
-        onChange={onInput('q')}
-        placeholder="Search artists or artworks…"
-        className="min-w-0 flex-1 rounded border border-stone-300 px-3 py-2"
-        aria-label="Search"
+        onChange={handle('q')}
       />
-      <Select
-        value={filters.city}
-        onChange={onInput('city')}
-        options={options?.cities ?? []}
-        label="city"
-      />
-      <Select
-        value={filters.country}
-        onChange={onInput('country')}
-        options={options?.countries ?? []}
-        label="country"
-      />
-      <Select
+      <div className="grid grid-cols-2 gap-2.5">
+        <FilterSelect
+          label="City"
+          value={filters.city}
+          onChange={handle('city')}
+          options={options?.cities ?? []}
+        />
+        <FilterSelect
+          label="Country"
+          value={filters.country}
+          onChange={handle('country')}
+          options={options?.countries ?? []}
+        />
+      </div>
+      <FilterSelect
+        label="Movement"
         value={filters.movement}
-        onChange={onInput('movement')}
+        onChange={handle('movement')}
         options={options?.movements ?? []}
-        label="movement"
       />
+      <div className="mt-3.5 flex items-center justify-between border-t border-line-2 pt-3.5 text-xs text-ink-3">
+        <span>
+          {shown} {shown === 1 ? 'museum' : 'museums'} shown
+        </span>
+        <button
+          type="button"
+          onClick={onReset}
+          className="cursor-pointer border-0 bg-transparent p-0 text-xs text-accent-deep hover:underline"
+        >
+          Reset
+        </button>
+      </div>
     </div>
   );
 }
 
-function Select({
+function FilterSelect({
+  label,
   value,
   onChange,
   options,
-  label,
 }: {
+  label: string;
   value: string;
   onChange: (e: ChangeEvent<HTMLSelectElement>) => void;
   options: string[];
-  label: string;
 }) {
   return (
-    <select
-      value={value}
-      onChange={onChange}
-      aria-label={label}
-      className="rounded border border-stone-300 bg-white px-2 py-2 text-sm"
-    >
-      <option value="">All {label}s</option>
-      {options.map((o) => (
-        <option key={o} value={o}>
-          {o}
-        </option>
-      ))}
-    </select>
+    <div className="mt-2">
+      <label
+        className="mb-1 block text-[10px] uppercase tracking-[0.08em] text-ink-3"
+        htmlFor={`filter-${label}`}
+      >
+        {label}
+      </label>
+      <select
+        id={`filter-${label}`}
+        value={value}
+        onChange={onChange}
+        className="input"
+        style={{ height: 32, fontSize: 12, padding: '0 8px' }}
+      >
+        <option value="">All {label.toLowerCase()}s</option>
+        {options.map((o) => (
+          <option key={o} value={o}>
+            {o}
+          </option>
+        ))}
+      </select>
+    </div>
   );
 }
 
-function MarkerPin({ count }: { count: number }) {
+// ── Selected museum panel ───────────────────────────────────
+
+function SelectedMuseumPanel({
+  museum,
+  onClose,
+}: {
+  museum: MapMuseumResult;
+  onClose: () => void;
+}) {
   return (
     <div
-      className="flex h-7 w-7 cursor-pointer items-center justify-center rounded-full border-2 border-white bg-stone-900 text-xs font-semibold text-white shadow-md transition hover:bg-stone-700"
-      title={`${count} artwork${count === 1 ? '' : 's'}`}
+      className="card absolute bottom-5 right-5 top-5 z-10 flex w-96 flex-col overflow-hidden p-0 shadow-lift"
     >
-      {count}
-    </div>
-  );
-}
-
-function MuseumPopupBody({ museum }: { museum: MapMuseumResult }) {
-  return (
-    <div className="space-y-2">
-      <div>
-        <h3 className="text-base font-semibold leading-tight">{museum.name}</h3>
-        <p className="text-xs text-stone-500">
-          {[museum.city, museum.country].filter(Boolean).join(', ')}
-        </p>
+      <div className="border-b border-line-2 p-6">
+        <div className="flex items-start justify-between">
+          <div className="eyebrow">{museum.country ?? '—'}</div>
+          <button
+            type="button"
+            onClick={onClose}
+            className="cursor-pointer border-0 bg-transparent p-0 text-ink-3 hover:text-ink"
+            aria-label="Close panel"
+          >
+            <Icon.close />
+          </button>
+        </div>
+        <h2 className="display m-0 mt-2 text-[28px]" style={{ fontStyle: 'italic' }}>
+          {museum.name}
+        </h2>
+        {museum.city && <div className="mt-1 text-[13px] text-ink-2">{museum.city}</div>}
+        <Link
+          to={`/museums/${museum.wikidata_id}`}
+          className="btn btn-ghost btn-sm mt-3.5 inline-flex"
+        >
+          See full museum page <Icon.arrow />
+        </Link>
       </div>
-      <ul className="max-h-64 space-y-2 overflow-y-auto pr-1">
+
+      <div className="flex-1 overflow-y-auto p-4">
+        <div className="eyebrow mb-3 px-2">
+          {museum.artworks.length} {museum.artworks.length === 1 ? 'work' : 'works'} here
+        </div>
         {museum.artworks.map((a) => (
-          <li key={a.id}>
-            <Link
-              to={`/artworks/${a.slug}`}
-              className="flex gap-2 rounded p-1 hover:bg-stone-100"
-            >
-              <Thumb src={a.image_url} alt={a.title} />
-              <div className="min-w-0">
-                <p className="truncate text-sm font-medium leading-tight">{a.title}</p>
-                <p className="truncate text-xs text-stone-600">
-                  {a.artist_name}
-                  {a.year && ` · ${a.year}`}
-                </p>
-              </div>
-            </Link>
-          </li>
+          <ArtworkRow key={a.id} artwork={a} />
         ))}
-      </ul>
+      </div>
     </div>
   );
 }
 
-function Thumb({ src, alt }: { src: string | null; alt: string }) {
-  const [broken, setBroken] = useState(false);
-  if (!src || broken) {
-    return <div className="h-12 w-12 flex-none rounded bg-stone-100" aria-hidden="true" />;
-  }
+function ArtworkRow({ artwork }: { artwork: MapArtwork }) {
+  const { user } = useAuth();
+  const queryClient = useQueryClient();
+  const wishlist = useQuery<WishlistItem[]>({
+    queryKey: ['wishlist'],
+    queryFn: () => request<WishlistItem[]>('/wishlist'),
+    enabled: !!user,
+  });
+  const isSaved = wishlist.data?.some((it) => it.artwork.id === artwork.id) ?? false;
+
+  // Optimistic mirror of WishlistButton — the heart toggles inline without
+  // navigating off the map. Logged-out users get a no-op (heart is hidden).
+  const toggle = useMutation<void, ApiError, void, { previous?: WishlistItem[] }>({
+    mutationFn: () =>
+      isSaved
+        ? request<void>(`/wishlist/${artwork.id}`, { method: 'DELETE' })
+        : request<void>('/wishlist', {
+            method: 'POST',
+            body: { artwork_id: artwork.id },
+          }).then(() => undefined),
+    onMutate: async () => {
+      await queryClient.cancelQueries({ queryKey: ['wishlist'] });
+      const previous = queryClient.getQueryData<WishlistItem[]>(['wishlist']);
+      queryClient.setQueryData<WishlistItem[]>(['wishlist'], (curr) => {
+        const list = curr ?? [];
+        if (isSaved) return list.filter((it) => it.artwork.id !== artwork.id);
+        // Optimistic insert: full Artwork shape isn't on hand here (MapArtwork
+        // is slimmer), so fake just enough to render — refetch reconciles.
+        return [
+          {
+            id: -1,
+            artwork: {
+              id: artwork.id,
+              wikidata_id: '',
+              title: artwork.title,
+              slug: artwork.slug,
+              year: artwork.year,
+              kind: 'painting',
+              image_url: artwork.image_url,
+              artist: {
+                id: 0,
+                wikidata_id: '',
+                name: artwork.artist_name,
+                slug: artwork.artist_slug,
+                birth_year: null,
+                death_year: null,
+                nationality: null,
+                movement: null,
+              },
+              museum: null,
+            },
+            notes: null,
+          },
+          ...list,
+        ];
+      });
+      return { previous };
+    },
+    onError: (_err, _vars, ctx) => {
+      if (ctx?.previous) queryClient.setQueryData(['wishlist'], ctx.previous);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['wishlist'] });
+    },
+  });
+
   return (
-    <img
-      src={src}
-      alt={alt}
-      loading="lazy"
-      onError={() => setBroken(true)}
-      className="h-12 w-12 flex-none rounded object-cover"
-    />
+    <Link
+      to={`/artworks/${artwork.slug}`}
+      className="flex items-center gap-3 rounded-md p-2 transition hover:bg-bg-2"
+    >
+      <div className="img-wrap h-15 w-12 flex-none rounded-sm">
+        <SmartImg src={artwork.image_url} alt={artwork.title} title={artwork.title} />
+      </div>
+      <div className="min-w-0 flex-1">
+        <div
+          className="font-display truncate text-[15px]"
+          style={{ fontStyle: 'italic' }}
+        >
+          {artwork.title}
+        </div>
+        <div className="truncate text-[11px] text-ink-3">
+          {artwork.artist_name}
+          {artwork.year && ` · ${artwork.year}`}
+        </div>
+      </div>
+      {user && (
+        <button
+          type="button"
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            toggle.mutate();
+          }}
+          disabled={toggle.isPending}
+          className={['heart-btn', isSaved && 'active'].filter(Boolean).join(' ')}
+          style={{ width: 30, height: 30 }}
+          aria-label={isSaved ? 'Remove from wishlist' : 'Save to wishlist'}
+          aria-pressed={isSaved}
+        >
+          <Icon.heart filled={isSaved} />
+        </button>
+      )}
+    </Link>
   );
 }
 
-function StatusOverlay({ loading, empty }: { loading: boolean; empty: boolean }) {
-  if (!loading && !empty) return null;
+// ── Counter pill ─────────────────────────────────────────
+
+function CounterPill({ shown, total }: { shown: number; total: number }) {
   return (
-    <div className="pointer-events-none absolute left-3 top-3 rounded bg-white/90 px-3 py-1 text-xs text-stone-700 shadow">
-      {loading ? 'Loading…' : 'No museums match these filters in this view.'}
+    <div className="absolute bottom-4 left-5 z-10 rounded-full bg-surface px-2.5 py-1 font-mono text-[11px] text-ink-3 shadow-card">
+      {shown} of {total} institutions
     </div>
   );
 }
