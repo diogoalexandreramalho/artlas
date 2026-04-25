@@ -1,4 +1,4 @@
-import enum
+from enum import StrEnum
 
 from sqlalchemy import Enum, ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -8,7 +8,7 @@ from models.artist import Artist
 from models.museum import Museum
 
 
-class ArtworkKind(str, enum.Enum):
+class ArtworkKind(StrEnum):
     painting = "painting"
     sculpture = "sculpture"
     other = "other"
