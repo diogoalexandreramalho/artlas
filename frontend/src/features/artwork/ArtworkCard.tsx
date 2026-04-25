@@ -1,49 +1,65 @@
-import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
+import { Icon } from '@/components/Icon';
+import { SmartImg } from '@/components/SmartImg';
 import type { Artwork } from '@/features/search/types';
 
-const CARD_CLASS =
-  'block rounded border border-stone-200 bg-white p-4 shadow-sm transition hover:border-stone-400 hover:shadow';
+type Props = {
+  artwork: Artwork;
+  /** Hide the museum/city in the label (used on museum detail). */
+  showMuseum?: boolean;
+  /** Pass a callback to render the heart toggle. Omit for read-only contexts. */
+  onSave?: (id: number) => void;
+  saved?: boolean;
+};
 
-/** Compact card linking to /artworks/<slug>. Used on SearchPage + ArtistDetailPage. */
-export function ArtworkCard({ artwork }: { artwork: Artwork }) {
+/** Museum-mat-board artwork card.
+ *
+ * Image with a 4:5 mat frame (`.artwork-frame`), italic Cal Sans title, and a
+ * micro-eyebrow line for artist · year · city. Used by HomeScreen,
+ * SearchResultsPage, ArtistDetailPage, MuseumDetailPage, WishlistPage. Width is
+ * driven by the parent grid — the card fills its column. */
+export function ArtworkCard({ artwork, showMuseum = true, onSave, saved = false }: Props) {
   return (
-    <li>
-      <Link to={`/artworks/${artwork.slug}`} className={CARD_CLASS}>
-        <div className="flex gap-3">
-          <Thumbnail src={artwork.image_url} alt={artwork.title} />
-          <div className="min-w-0">
-            <h3 className="truncate font-medium">{artwork.title}</h3>
-            <p className="truncate text-sm text-stone-600">
-              {artwork.artist.name}
-              {artwork.year && ` · ${artwork.year}`}
-            </p>
-            {artwork.museum && (
-              <p className="mt-1 truncate text-xs text-stone-500">
-                {artwork.museum.name}
-                {artwork.museum.city && `, ${artwork.museum.city}`}
-              </p>
-            )}
-          </div>
+    <li className="list-none">
+      <Link
+        to={`/artworks/${artwork.slug}`}
+        className="artwork-frame block transition hover:shadow-lift"
+      >
+        <div className="img-wrap">
+          <SmartImg
+            src={artwork.image_url}
+            alt={artwork.title}
+            title={artwork.title}
+            subtitle={artwork.artist.name}
+          />
+          {onSave && (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                onSave(artwork.id);
+              }}
+              className={['heart-btn absolute right-2 top-2', saved && 'active']
+                .filter(Boolean)
+                .join(' ')}
+              aria-label={saved ? 'Remove from wishlist' : 'Save to wishlist'}
+              aria-pressed={saved}
+            >
+              <Icon.heart filled={saved} />
+            </button>
+          )}
+        </div>
+        <div className="label">
+          <span className="font-display text-base leading-tight text-ink">{artwork.title}</span>
+          <span className="text-[11px] tracking-[0.04em] text-ink-3">
+            {artwork.artist.name}
+            {artwork.year && ` · ${artwork.year}`}
+            {showMuseum && artwork.museum?.city && ` · ${artwork.museum.city}`}
+          </span>
         </div>
       </Link>
     </li>
-  );
-}
-
-function Thumbnail({ src, alt }: { src: string | null; alt: string }) {
-  const [broken, setBroken] = useState(false);
-  if (!src || broken) {
-    return <div className="h-16 w-16 flex-none rounded bg-stone-100" aria-hidden="true" />;
-  }
-  return (
-    <img
-      src={src}
-      alt={alt}
-      loading="lazy"
-      onError={() => setBroken(true)}
-      className="h-16 w-16 flex-none rounded object-cover"
-    />
   );
 }
