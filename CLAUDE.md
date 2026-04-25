@@ -20,7 +20,7 @@ backend/src/
   schemas/             # Pydantic
   services/            # business rules, commits here
   repositories/        # async DB access
-  etl/wikidata.py      # daily sync (stub)
+  etl/                 # wikidata.py (stub), seed.py + seed_data.py (dev fixtures)
 backend/alembic/       # migrations
 frontend/src/
   app/                 # App, providers, routes
@@ -40,6 +40,7 @@ docker compose up -d postgres
 cd backend && uv sync
 uv run alembic upgrade head
 uv run alembic revision --autogenerate -m "..."
+(cd src && uv run python -m etl.seed)              # seed dev data (idempotent; --reset to truncate)
 uv run uvicorn main:app --reload --app-dir src
 uv run pytest
 uv run ruff check .
