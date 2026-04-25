@@ -2,7 +2,8 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 import { LoginPage } from '@/features/auth/LoginPage';
 import { RegisterPage } from '@/features/auth/RegisterPage';
 import { RequireAuth } from '@/features/auth/RequireAuth';
-import { SearchPage } from '@/features/search/SearchPage';
+import { HomeScreen } from '@/features/home/HomeScreen';
+import { SearchResultsPage } from '@/features/search/SearchResultsPage';
 import { MapPage } from '@/features/map/MapPage';
 import { WishlistPage } from '@/features/wishlist/WishlistPage';
 import { ArtworkDetailPage } from '@/features/artwork/ArtworkDetailPage';
@@ -12,7 +13,8 @@ import { MuseumDetailPage } from '@/features/museum/MuseumDetailPage';
 export function AppRoutes() {
   return (
     <Routes>
-      <Route path="/" element={<SearchPage />} />
+      <Route path="/" element={<HomeScreen />} />
+      <Route path="/search" element={<SearchResultsPage />} />
       <Route path="/map" element={<MapPage />} />
       <Route path="/artworks/:slug" element={<ArtworkDetailPage />} />
       <Route path="/artists/:slug" element={<ArtistDetailPage />} />
