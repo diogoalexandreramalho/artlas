@@ -20,6 +20,7 @@ cp .env.example .env
 # Generate a secret: openssl rand -hex 32  →  paste into JWT_SECRET_KEY
 uv sync
 uv run alembic upgrade head
+(cd src && uv run python -m etl.seed)   # seed dev data (idempotent; --reset to truncate)
 uv run uvicorn main:app --reload --app-dir src
 # http://localhost:8000/docs
 
