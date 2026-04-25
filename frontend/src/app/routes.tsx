@@ -3,6 +3,7 @@ import { LoginPage } from '@/features/auth/LoginPage';
 import { RegisterPage } from '@/features/auth/RegisterPage';
 import { RequireAuth } from '@/features/auth/RequireAuth';
 import { HomeScreen } from '@/features/home/HomeScreen';
+import { ProfileScreen } from '@/features/profile/ProfileScreen';
 import { SearchResultsPage } from '@/features/search/SearchResultsPage';
 import { MapPage } from '@/features/map/MapPage';
 import { WishlistPage } from '@/features/wishlist/WishlistPage';
@@ -26,6 +27,14 @@ export function AppRoutes() {
         element={
           <RequireAuth>
             <WishlistPage />
+          </RequireAuth>
+        }
+      />
+      <Route
+        path="/profile"
+        element={
+          <RequireAuth>
+            <ProfileScreen />
           </RequireAuth>
         }
       />
