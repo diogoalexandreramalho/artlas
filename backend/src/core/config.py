@@ -1,7 +1,7 @@
 from functools import lru_cache
 from typing import Annotated, Any, Literal
 
-from pydantic import Field, PostgresDsn, computed_field, field_validator
+from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings, NoDecode, SettingsConfigDict
 
 
@@ -16,11 +16,16 @@ class Settings(BaseSettings):
     environment: Literal["local", "dev", "staging", "prod"] = "local"
     log_level: str = "INFO"
 
-    postgres_host: str = "localhost"
-    postgres_port: int = 5432
-    postgres_user: str = "artlas"
-    postgres_password: str = "artlas"
-    postgres_db: str = "artlas"
+    # SQLAlchemy async URL (asyncpg driver). Used by the FastAPI runtime.
+    # Local default matches docker-compose. Set to the provider's async URL in
+    # production (e.g. Neon: swap `postgresql://` → `postgresql+asyncpg://` and
+    # `sslmode=require` → `ssl=require`).
+    database_url: str = "postgresql+asyncpg://artlas:artlas@localhost:5432/artlas"
+
+    # Sync URL used by Alembic (psycopg driver). Same DB, different Python
+    # driver — see docs/database-urls.md if that surprises you. Provider async
+    # URLs use `ssl=require`; sync URLs use `sslmode=require`.
+    sync_database_url: str = "postgresql+psycopg://artlas:artlas@localhost:5432/artlas"
 
     jwt_secret_key: str = Field(min_length=32)
     jwt_algorithm: str = "HS256"
@@ -34,33 +39,6 @@ class Settings(BaseSettings):
         if isinstance(v, str):
             return [o.strip() for o in v.split(",") if o.strip()]
         return v
-
-    @computed_field  # type: ignore[prop-decorator]
-    @property
-    def database_url(self) -> str:
-        dsn = PostgresDsn.build(
-            scheme="postgresql+asyncpg",
-            username=self.postgres_user,
-            password=self.postgres_password,
-            host=self.postgres_host,
-            port=self.postgres_port,
-            path=self.postgres_db,
-        )
-        return str(dsn)
-
-    @computed_field  # type: ignore[prop-decorator]
-    @property
-    def sync_database_url(self) -> str:
-        """Sync DSN used by Alembic migrations."""
-        dsn = PostgresDsn.build(
-            scheme="postgresql+psycopg",
-            username=self.postgres_user,
-            password=self.postgres_password,
-            host=self.postgres_host,
-            port=self.postgres_port,
-            path=self.postgres_db,
-        )
-        return str(dsn)
 
 
 @lru_cache
