@@ -1,0 +1,20 @@
+# Netlify build + SPA-fallback config.
+#
+# The site publishes the Vite build (`frontend/dist`) as static files. React
+# Router owns client-side routing, so every path must be served by
+# `index.html` — otherwise a hard refresh on e.g. `/artworks/mona-lisa` 404s.
+
+[build]
+  base    = "frontend"
+  publish = "dist"
+  command = "npm run build"
+
+[build.environment]
+  # Pin Node so Netlify doesn't drift between deploys.
+  NODE_VERSION = "20"
+
+# SPA fallback: any unmatched path serves the built index.html.
+[[redirects]]
+  from   = "/*"
+  to     = "/index.html"
+  status = 200
